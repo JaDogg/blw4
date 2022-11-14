@@ -1,14 +1,16 @@
-# Basic parameters; check that these match your project / environment
 cmake_minimum_required(VERSION 3.9)
 
-# Replace "game" with a name for your project (this is used the name of the output)
-project(game)
+project(blw4)
 
-# Add your sources here (adding headers is optional, but helps some CMake generators)
-set(PROJECT_SOURCE game.cpp game.hpp)
+set(PROJECT_SOURCE game.cpp game.hpp src/backend/wasm_wasm3.c)
 
-# ... and any other files you want in the release here
-set(PROJECT_DISTRIBS LICENSE README.md)
+file(GLOB COMMON_SOURCES RELATIVE "${CMAKE_SOURCE_DIR}" "src/*.c")
+file(GLOB M3_SOURCES RELATIVE "${CMAKE_SOURCE_DIR}" "vendor/wasm3/source/*.c")
+
+set(PROJECT_DISTRIBS LICENSE 32_BLIT_README.md)
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 # Build configuration; approach this with caution!
 if(MSVC)
@@ -19,10 +21,14 @@ endif()
 
 find_package (32BLIT CONFIG REQUIRED PATHS ../32blit-sdk $ENV{PATH_32BLIT_SDK})
 
-blit_executable (${PROJECT_NAME} ${PROJECT_SOURCE})
+blit_executable (${PROJECT_NAME} ${PROJECT_SOURCE} ${M3_SOURCES} ${COMMON_SOURCES})
 blit_assets_yaml (${PROJECT_NAME} assets.yml)
 blit_metadata (${PROJECT_NAME} metadata.yml)
 add_custom_target (flash DEPENDS ${PROJECT_NAME}.flash)
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/vendor/wasm3/source")
+if(NOT MSVC)
+target_compile_options(${PROJECT_NAME} PUBLIC -Wno-error=double-promotion)
+endif()
 
 # setup release packages
 install (FILES ${PROJECT_DISTRIBS} DESTINATION .)

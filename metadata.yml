@@ -1,10 +1,10 @@
-title: game title
-description: game description
-author: you
+title: blw4
+description: WASM4 for 32Blit
+author: Bhathiya Perera
 splash:
   file: assets/no-image.png
 icon:
   file: assets/no-icon.png
 version: v0.0.1
-category: game # game, demo, utility, ...
+category: emulator
 url: https://github.com/32blit/32blit-boilerplate
