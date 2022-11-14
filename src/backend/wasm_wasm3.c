@@ -174,7 +174,7 @@ uint8_t* w4_wasmInit () {
     //
     // Using 64 KB, since this is the default of wasm3 standalone binary on
     // desktop platforms (from wasm3/platforms/app/main.c).
-    uint32_t wasm3StackSize = 10 * 1024;
+    uint32_t wasm3StackSize = 64 * 1024;
 
     runtime = m3_NewRuntime(env, wasm3StackSize, NULL);
 
