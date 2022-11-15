@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.9)
 
 project(blw4)
 
-set(PROJECT_SOURCE game.cpp game.hpp src/backend/wasm_wasm3.c)
+set(PROJECT_SOURCE game.cpp src/backend/wasm_wasm3.c)
 
 file(GLOB COMMON_SOURCES RELATIVE "${CMAKE_SOURCE_DIR}" "src/*.c")
+file(GLOB COMMON_SOURCES_CPP RELATIVE "${CMAKE_SOURCE_DIR}" "src/*.cpp")
 file(GLOB M3_SOURCES RELATIVE "${CMAKE_SOURCE_DIR}" "vendor/wasm3/source/*.c")
 
-set(PROJECT_DISTRIBS LICENSE 32_BLIT_README.md)
+set(PROJECT_DISTRIBS LICENSE README.md)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
@@ -21,7 +22,7 @@ endif()
 
 find_package (32BLIT CONFIG REQUIRED PATHS ../32blit-sdk $ENV{PATH_32BLIT_SDK})
 
-blit_executable (${PROJECT_NAME} ${PROJECT_SOURCE} ${M3_SOURCES} ${COMMON_SOURCES})
+blit_executable (${PROJECT_NAME} ${PROJECT_SOURCE} ${M3_SOURCES} ${COMMON_SOURCES} ${COMMON_SOURCES_CPP})
 blit_assets_yaml (${PROJECT_NAME} assets.yml)
 blit_metadata (${PROJECT_NAME} metadata.yml)
 add_custom_target (flash DEPENDS ${PROJECT_NAME}.flash)
