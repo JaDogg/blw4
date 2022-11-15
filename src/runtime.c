@@ -53,7 +53,6 @@ void w4_runtimeInit (uint8_t* memoryBytes, w4_Disk* diskBytes) {
     w4_write16LE(&memory->mouseX, 0x7fff);
     w4_write16LE(&memory->mouseY, 0x7fff);
 
-//    w4_apuInit();
     w4_framebufferInit(&memory->drawColors, memory->framebuffer);
 }
 

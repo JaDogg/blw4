@@ -5,7 +5,6 @@
 ## What is this?
 
 * WASM4 fantasy console emulator for 32Blit.
-* Can load a game cart file named `cart.wasm`.
 * Repo created using 32blit boilerplate
 
 ## Controls
@@ -22,14 +21,14 @@
 | Mouse Right   | B               |
 | Mouse Middle  | Joystick Button |
 | Mouse Move    | Joystick        |
+| Select Game   | Reset           |
 
 
 ## Possible Problems:
 
 * Possibly != 60FPS (Do not think this is possible to fix)
-* Possibly <64KB RAM for WASM4 (Need to check in 32blit)
-* No net-play (Do not think this is possible to fix)
-* No launcher (Cart file must be `cart.wasm`) (Can attempt to implement this)
+* Possibly != 64KB RAM for WASM4 (Need to check in 32blit)
+* No net-play (Not sure about this)
 * Sound working but not at 60FPS :(
     * Problem: should this be implemented as 40FPS or 60FPS?
 * No disk save/load support. (Can attempt to implement this)
@@ -38,7 +37,7 @@
 
 ## Usage
 
-* Copy the `blw4.blit` then `cart.wasm` file to flash storage.
+* Copy the `blw4.blit` then `*.wasm` file to sd card.
 * You can find more carts at https://wasm4.org/play
 
 ----------
