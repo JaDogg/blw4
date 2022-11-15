@@ -3,24 +3,43 @@
 ![](https://github.com/JaDogg/blw4/blob/main/wasm4-blit32.png?raw=true)
 
 ## What is this?
+
 * WASM4 fantasy console emulator for 32Blit.
 * Can load a game cart file named `cart.wasm`.
 * Repo created using 32blit boilerplate
 
-## Possible Problems: 
+## Controls
+
+| WASM4 Control | 32Blit Control  |
+|---------------|-----------------|
+| X             | X               |
+| Z             | Y               |
+| Up            | Up              |
+| Down          | Down            |
+| Left          | Left            |
+| Right         | Right           |
+| Mouse Left    | A               |
+| Mouse Right   | B               |
+| Mouse Middle  | Joystick Button |
+| Mouse Move    | Joystick        |
+
+
+## Possible Problems:
+
 * Possibly != 60FPS (Do not think this is possible to fix)
 * Possibly <64KB RAM for WASM4 (Need to check in 32blit)
 * No mouse (Can attempt to implement this using the joystick in 32blit)
 * No net-play (Do not think this is possible to fix)
 * No launcher (Cart file must be `cart.wasm`) (Can attempt to implement this)
 * Sound working but not at 60FPS :(
-  * Problem: should this be implemented as 40FPS or 60FPS? 
+    * Problem: should this be implemented as 40FPS or 60FPS?
 * No disk save/load support. (Can attempt to implement this)
 * Not part of original wasm4 github repo (At the moment I did not expect this to work at all, so I didn't fork it)
-  * Various changes cross files were done.
+    * Various changes cross files were done.
 
 ## Usage
-* Copy the `blw4.blit` then `cart.wasm` file to flash storage. 
+
+* Copy the `blw4.blit` then `cart.wasm` file to flash storage.
 * You can find more carts at https://wasm4.org/play
 
 ----------
@@ -30,12 +49,14 @@
 ## Setting up SDKs
 
 ### Installing cross-compiler and C library, sdl2
+
 ```bash
 sudo pacman -S arm-none-eabi-gcc arm-none-eabi-newlib arm-none-eabi-binutils sdl2 sdl2_image sdl2_net
 python3 -m pip install 32blit
 ```
 
 ### Cloning SDKs
+
 ```bash
 # I couldn't get the auto download work. So I cloned it to parent directory of this folder
 git clone --recurse-submodules -j8 git@github.com:raspberrypi/pico-sdk.git
@@ -45,10 +66,10 @@ git clone --recurse-submodules -j8 git@github.com:raspberrypi/pico-extras
 ```
 
 ### Cloning original WASM4 (You do not need this)
+
 ```bash
 git clone --recurse-submodules -j8 git@github.com:aduros/wasm4.git
 ```
-
 
 ---------
 
@@ -72,6 +93,7 @@ PERFORMANCE OF THIS SOFTWARE.
 ```
 
 # Cart file
+
 https://wasm4.org/play/nyancat
 Jake Ledoux
 https://creativecommons.org/licenses/by-nc-sa/4.0/
