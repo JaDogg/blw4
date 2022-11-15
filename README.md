@@ -28,7 +28,6 @@
 
 * Possibly != 60FPS (Do not think this is possible to fix)
 * Possibly <64KB RAM for WASM4 (Need to check in 32blit)
-* No mouse (Can attempt to implement this using the joystick in 32blit)
 * No net-play (Do not think this is possible to fix)
 * No launcher (Cart file must be `cart.wasm`) (Can attempt to implement this)
 * Sound working but not at 60FPS :(
