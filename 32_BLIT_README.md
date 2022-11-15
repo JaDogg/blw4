@@ -125,12 +125,19 @@ this makes it easier for CMake to find them:
 If you've got local copies of the Pico SDK, Pico Extras and 32blit SDK alongside your project,
 then you can configure and build your .uf2 like so:
 
+### Pico
 ```
 mkdir build.pico
 cd build.pico
 cmake .. -DCMAKE_TOOLCHAIN_FILE=../../32blit-sdk/pico.toolchain -DPICO_BOARD=pimoroni_picosystem
 ```
 
+### 32blit
+```
+mkdir build.32
+cd build.32
+cmake .. -DCMAKE_TOOLCHAIN_FILE=../../32blit-sdk/32blit.toolchain
+```
 If you'd like the Pico SDK to handle grabbing Pico SDK and Pico Extras for you, you can use:
 
 ```
