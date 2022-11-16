@@ -1,6 +1,8 @@
 # 32-Blit WASM4
 
-![](https://github.com/JaDogg/blw4/blob/main/wasm4-blit32.png?raw=true)
+![](https://github.com/JaDogg/blw4/blob/main/screen-1.png?raw=true)
+![](https://github.com/JaDogg/blw4/blob/main/screen-2.png?raw=true)
+![](https://github.com/JaDogg/blw4/blob/main/screen-3.png?raw=true)
 
 ## What is this?
 
