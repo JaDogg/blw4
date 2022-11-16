@@ -1,14 +1,23 @@
 #include "32blit.hpp"
+#include "gpu.hpp"
 #include <iostream>
 
-#define WASM4_SIZE 160
-#define TARGET_SIZE 240
-#if defined(PICO_BUILD)
-#define TARGET_WIDTH 240
-#else
-#define TARGET_WIDTH 320
+static GpuRenderer renderer = GpuRenderer::STRETCH_RENDER;
+#ifndef PICO_BUILD
+static uint32_t prev_row[TARGET_SIZE];
+static uint32_t cur_row[TARGET_SIZE];
 #endif
-#define WASM4_PIXELS_PER_BYTE 4
+static int target_x = 0;
+static int target_y = -1;
+
+
+void set_render(GpuRenderer renderer_value) {
+  renderer = renderer_value;
+}
+GpuRenderer get_render() {
+  return renderer;
+}
+
 
 /**
  * Write rgb to given pointer (3 bytes are written)
@@ -39,15 +48,13 @@ uint32_t blend(uint32_t colour1, uint32_t colour2) {
   return b | (g << 8) | ((r << 8) << 8);
 }
 
-#ifndef PICO_BUILD
-static uint32_t prev_row[TARGET_SIZE];
-static uint32_t cur_row[TARGET_SIZE];
-#endif
-static int target_x = 0;
-static int target_y = -1;
-const int x_skip = (TARGET_WIDTH - TARGET_SIZE) / 2;
+
 void draw_point_target(int x, int y, uint32_t colour) {
   rgb(blit::screen.ptr(x_skip + x, y), colour);
+}
+
+void draw_point_centered(int x, int y, uint32_t colour) {
+  rgb(blit::screen.ptr(x_center_skip + x, y_center_skip + y), colour);
 }
 
 void draw_point(int origin_x, int origin_y, uint32_t origin_colour) {
@@ -97,12 +104,8 @@ void draw_point(int origin_x, int origin_y, uint32_t origin_colour) {
 }
 
 extern "C" {
-/**
- * callback for wasm4 drawing
- * @param palette
- * @param framebuffer
- */
-void wasm4_draw_callback(const uint32_t *palette, const uint8_t *framebuffer) {
+
+void wasm4_draw_1_5_x(const uint32_t *palette, const uint8_t *framebuffer) {
   int pixel = -1, c1, c2, c3, c4, x, y;
   const int framebuffer_items = WASM4_SIZE * WASM4_SIZE / WASM4_PIXELS_PER_BYTE;
   for (int n = 0; n < framebuffer_items; ++n) {
@@ -133,7 +136,49 @@ void wasm4_draw_callback(const uint32_t *palette, const uint8_t *framebuffer) {
     draw_point(x, y, palette[c4]);
   }
 }
+
+void wasm4_draw_center(const uint32_t *palette, const uint8_t *framebuffer) {
+  int pixel = -1, c1, c2, c3, c4, x, y;
+  const int framebuffer_items = WASM4_SIZE * WASM4_SIZE / WASM4_PIXELS_PER_BYTE;
+  for (int n = 0; n < framebuffer_items; ++n) {
+    uint8_t quartet = framebuffer[n];
+    c1 = (quartet & 0b00000011) >> 0;
+    c2 = (quartet & 0b00001100) >> 2;
+    c3 = (quartet & 0b00110000) >> 4;
+    c4 = (quartet & 0b11000000) >> 6;
+
+    pixel++;
+    y = pixel / WASM4_SIZE;
+    x = pixel % WASM4_SIZE;
+    draw_point_centered(x, y, palette[c1]);
+
+    pixel++;
+    y = pixel / WASM4_SIZE;
+    x = pixel % WASM4_SIZE;
+    draw_point_centered(x, y, palette[c2]);
+
+    pixel++;
+    y = pixel / WASM4_SIZE;
+    x = pixel % WASM4_SIZE;
+    draw_point_centered(x, y, palette[c3]);
+
+    pixel++;
+    y = pixel / WASM4_SIZE;
+    x = pixel % WASM4_SIZE;
+    draw_point_centered(x, y, palette[c4]);
+  }
+}
+
+/**
+ * callback for wasm4 drawing
+ * @param palette
+ * @param framebuffer
+ */
 void w4_windowComposite(const uint32_t *palette, const uint8_t *framebuffer) {
-  wasm4_draw_callback(palette, framebuffer);
+  if (renderer == GpuRenderer::STRETCH_RENDER) {
+    wasm4_draw_1_5_x(palette, framebuffer);
+  } else {
+    wasm4_draw_center(palette, framebuffer);
+  }
 }
 }

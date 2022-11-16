@@ -1,5 +1,6 @@
 #include "32blit.hpp"
 #include "src/apu.hpp"
+#include "src/gpu.hpp"
 #include <cstring>
 #include <iostream>
 
@@ -8,16 +9,10 @@ extern "C" {
 #include "src/wasm.h"
 }
 
-#define TARGET_SIZE 240
-#if defined(PICO_BUILD)
-#define TARGET_WIDTH 240
-#else
-#define TARGET_WIDTH 320
-#endif
+
 
 enum class EmulatorState { CART_LOADING, CART_LOADED, CART_SELECTION };
 
-static const int x_skip = (TARGET_WIDTH - TARGET_SIZE) / 2;
 static w4_Disk disk_storage_data{0, {}};
 static bool first_time = true;
 static uint32_t prev_time_ms = 0;
@@ -116,6 +111,9 @@ void init() {
   initialize_wasm4();
 #if !defined(TARGET_32BLIT_HW) && !defined(PICO_BUILD)
   cart_files.emplace_back("./cart.wasm");
+  for (int i = 1; i < 30; i++) {
+    cart_files.emplace_back("./cart.wasm" + std::to_string(i));
+  }
 #else
   if (cart_files.empty()) {
     auto files = blit::list_files("/");
@@ -197,15 +195,19 @@ void render(uint32_t time) {
     w4_runtimeDraw();
     // White - Red Cursor
     blit::screen.pen = blit::Pen(255, 255, 255);
-    blit::screen.circle(
-        blit::Point{x_skip + static_cast<int32_t>(mouse_x * 1.5),
-                    static_cast<int32_t>(mouse_y * 1.5)},
-        3);
+    int32_t x, y;
+    if (get_render() == GpuRenderer::CENTER_RENDER) {
+      x = x_center_skip + mouse_x;
+      y = y_center_skip + mouse_y;
+    } else {
+      x = x_skip + static_cast<int32_t>(mouse_x * 1.5);
+      y = static_cast<int32_t>(mouse_y * 1.5);
+    }
+    auto mouse_point = blit::Point{x, y};
+
+    blit::screen.circle(mouse_point, 3);
     blit::screen.pen = blit::Pen(255, 0, 0);
-    blit::screen.circle(
-        blit::Point{x_skip + static_cast<int32_t>(mouse_x * 1.5),
-                    static_cast<int32_t>(mouse_y * 1.5)},
-        2);
+    blit::screen.circle(mouse_point,2);
   }
 }
 
@@ -285,8 +287,11 @@ void render_selector() {
   // Title
   blit::screen.pen = blit::Pen(255, 255, 255);
   blit::screen.rectangle(blit::Rect(0, 0, 320, 14));
+  blit::screen.rectangle(blit::Rect(0, TARGET_SIZE - 14, 320, 14));
   blit::screen.pen = blit::Pen(255, 0, 0);
-  blit::screen.text("Select wasm4 cart", blit::minimal_font, blit::Point(5, 4));
+  blit::screen.text("Select wasm4 cart (Press X)", blit::minimal_font, blit::Point(5, 4));
+  blit::screen.text(std::string("Render Mode (Press Y to change): ") + (get_render() == GpuRenderer::STRETCH_RENDER ? "1.5x" : "1:1"),
+                    blit::minimal_font, blit::Point(5, TARGET_SIZE - 10));
   if (cart_files.empty()) {
     return;
   }
@@ -326,6 +331,12 @@ void update_selector() {
   } else if (blit::buttons.pressed & blit::Button::X) {
     std::string cart_file_path = cart_files[cart_file_idx];
     load_cart(cart_file_path);
+  } else if (blit::buttons.pressed & blit::Button::Y) {
+    if (get_render() == GpuRenderer::CENTER_RENDER) {
+      set_render(GpuRenderer::STRETCH_RENDER);
+    } else {
+      set_render(GpuRenderer::CENTER_RENDER);
+    }
   }
 }
 void clamp_cart_idx() {
