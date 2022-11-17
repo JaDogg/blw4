@@ -3,6 +3,11 @@
 ![](https://github.com/JaDogg/blw4/blob/main/screen-1.png?raw=true)
 ![](https://github.com/JaDogg/blw4/blob/main/screen-2.png?raw=true)
 ![](https://github.com/JaDogg/blw4/blob/main/screen-3.png?raw=true)
+![](https://github.com/JaDogg/blw4/blob/main/screen-4.png?raw=true)
+![](https://github.com/JaDogg/blw4/blob/main/screen-5.png?raw=true)
+![](https://github.com/JaDogg/blw4/blob/main/screen-6.png?raw=true)
+![](https://github.com/JaDogg/blw4/blob/main/screen-7.png?raw=true)
+![](https://github.com/JaDogg/blw4/blob/main/screen-8.png?raw=true)
 
 ## What is this?
 
